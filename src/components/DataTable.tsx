@@ -1,0 +1,6 @@
+import { ReactNode } from 'react'
+export interface Column<T> { header:string; accessor:(row:T)=>ReactNode; align?:'left'|'right'|'center'; computed?:boolean }
+interface DataTableProps<T> { columns:Column<T>[]; rows:T[]; totalRow?:ReactNode[]; emptyLabel?:string }
+export default function DataTable<T>({columns,rows,totalRow,emptyLabel='No records yet.'}:DataTableProps<T>) {
+ return <div className="bg-white rounded-card shadow-card overflow-x-auto"><table className="w-full text-sm"><thead><tr className="bg-brand-navy text-white">{columns.map((col,i)=><th key={i} className={`px-4 py-3 font-medium text-xs uppercase tracking-wide text-${col.align ?? 'left'}`}>{col.header}</th>)}</tr></thead><tbody>{rows.length===0?<tr><td colSpan={columns.length} className="px-4 py-6 text-center text-slate-400">{emptyLabel}</td></tr>:rows.map((row,ri)=><tr key={ri} className={ri%2===0?'bg-white':'bg-slate-50'}>{columns.map((col,ci)=><td key={ci} className={`px-4 py-2.5 text-${col.align ?? 'left'} ${col.computed?'text-slate-500 bg-slate-50/60 font-medium':'text-slate-700'}`}>{col.accessor(row)}</td>)}</tr>)}{totalRow&&<tr className="bg-brand-navy/5 font-semibold border-t-2 border-brand-navy/20">{totalRow.map((cell,i)=><td key={i} className="px-4 py-3">{cell}</td>)}</tr>}</tbody></table></div>
+}
