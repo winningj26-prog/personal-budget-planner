@@ -5,6 +5,7 @@ import { formatCurrency, formatPercent } from '../lib/format'
 import KpiCard from '../components/KpiCard'
 import DataTable, { Column } from '../components/DataTable'
 import { Wallet, Receipt, PiggyBank, Percent, Save } from 'lucide-react'
+import { budgetDifference, budgetStatus, budgetUtilization } from '../lib/calculations'
 
 interface BudgetRow {
   category_id: string
@@ -14,15 +15,7 @@ interface BudgetRow {
   actual_amount: number
 }
 interface Category { id: string; name: string }
-type Status = 'On Track' | 'Near Limit' | 'Over Budget'
-
-function computeStatus(utilization: number): Status {
-  if (utilization > 1) return 'Over Budget'
-  if (utilization >= 0.81) return 'Near Limit'
-  return 'On Track'
-}
-
-const statusTone: Record<Status, string> = {
+const statusTone: Record<'On Track' | 'Near Limit' | 'Over Budget', string> = {
   'On Track': 'bg-positive-bg text-positive',
   'Near Limit': 'bg-warning-bg text-warning',
   'Over Budget': 'bg-negative-bg text-negative'
@@ -126,13 +119,13 @@ export default function MonthlyBudget() {
     },
     { header: 'Actual Amount', accessor: r => formatCurrency(r.actual_amount, settings.currency), align: 'right', computed: true },
     { header: 'Difference', accessor: r => {
-      const difference = r.planned_amount - r.actual_amount
+      const difference = budgetDifference(r.planned_amount, r.actual_amount)
       return <span className={difference < 0 ? 'text-negative' : difference > 0 ? 'text-positive' : 'text-slate-500'}>{formatCurrency(difference, settings.currency)}</span>
     }, align: 'right', computed: true },
     { header: '% Used', accessor: r => formatPercent(r.planned_amount > 0 ? r.actual_amount / r.planned_amount : 0), align: 'right', computed: true },
     { header: 'Status', accessor: r => {
-      const utilization = r.planned_amount > 0 ? r.actual_amount / r.planned_amount : 0
-      const status = computeStatus(utilization)
+      const utilization = budgetUtilization(r.planned_amount, r.actual_amount)
+      const status = budgetStatus(r.planned_amount, r.actual_amount)
       return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusTone[status]}`}>{r.planned_amount === 0 && r.actual_amount > 0 ? 'Over Budget' : status}</span>
     }, computed: true }
   ]
