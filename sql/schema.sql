@@ -105,3 +105,6 @@ create index if not exists idx_expense_category on expenses(category_id);
 alter table user_settings add column if not exists default_month int;
 alter table user_settings add column if not exists default_year int;
 update user_settings set default_month = coalesce(default_month, extract(month from current_date)::int), default_year = coalesce(default_year, extract(year from current_date)::int);
+
+-- Ensure the exposed budget view applies the underlying RLS policies to the calling user.
+alter view v_budget_status set (security_invoker = true);
