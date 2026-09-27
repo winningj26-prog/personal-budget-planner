@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import AppShell from './components/AppShell'
+import { AuthProvider } from './lib/AuthContext'
 import { SettingsProvider } from './lib/SettingsContext'
 import StartHere from './pages/StartHere'
 import SettingsPage from './pages/SettingsPage'
@@ -8,4 +9,23 @@ import Expenses from './pages/Expenses'
 import MonthlyBudget from './pages/MonthlyBudget'
 import Dashboard from './pages/Dashboard'
 import AnnualSummary from './pages/AnnualSummary'
-export default function App(){return <SettingsProvider><Routes><Route element={<AppShell />}><Route index element={<StartHere/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="income" element={<Income/>}/><Route path="expenses" element={<Expenses/>}/><Route path="budget" element={<MonthlyBudget/>}/><Route path="dashboard" element={<Dashboard/>}/><Route path="annual-summary" element={<AnnualSummary/>}/></Route></Routes></SettingsProvider>}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <SettingsProvider>
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route index element={<StartHere />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="income" element={<Income />} />
+            <Route path="expenses" element={<Expenses />} />
+            <Route path="budget" element={<MonthlyBudget />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="annual-summary" element={<AnnualSummary />} />
+          </Route>
+        </Routes>
+      </SettingsProvider>
+    </AuthProvider>
+  )
+}
