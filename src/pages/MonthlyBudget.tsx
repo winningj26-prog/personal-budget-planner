@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useSettings } from '../lib/SettingsContext'
 import { formatCurrency, formatPercent } from '../lib/format'
@@ -111,7 +111,7 @@ export default function MonthlyBudget() {
   const remainingBudget = plannedExpenses - actualExpenses
   const savingsRate = actualIncome > 0 ? actualSavings / actualIncome : 0
 
-  const columns: Column<BudgetRow>[] = useMemo(() => [
+  const columns: Column<BudgetRow>[] = [
     { header: 'Category', accessor: r => <span>{r.category_name} <span className="text-xs text-slate-400">({r.category_type})</span></span> },
     {
       header: 'Planned Amount',
@@ -135,7 +135,7 @@ export default function MonthlyBudget() {
       const status = computeStatus(utilization)
       return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusTone[status]}`}>{r.planned_amount === 0 && r.actual_amount > 0 ? 'Over Budget' : status}</span>
     }, computed: true }
-  ], [planned, saving, settings.currency])
+  ]
 
   return <div className="space-y-6">
     <div><h2 className="text-lg font-semibold text-brand-navy">Monthly Budget</h2><p className="text-sm text-slate-500">Set planned amounts for {new Date(2000, settings.month - 1, 1).toLocaleString('en-US', { month: 'long' })} {settings.year}, then compare them with actual transactions.</p></div>
