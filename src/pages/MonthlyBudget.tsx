@@ -57,8 +57,8 @@ export default function MonthlyBudget() {
     for (const item of expenses ?? []) if (item.category_id) actualExpenses.set(item.category_id, (actualExpenses.get(item.category_id) ?? 0) + Number(item.amount))
 
     const nextRows: BudgetRow[] = [
-      ...(ic ?? []).map(c => ({ category_id: c.id, category_name: c.name, category_type: 'income' as const, planned_amount: budgetMap.get(`${income:${c.id}}`) ?? 0, actual_amount: actualIncome.get(c.id) ?? 0 })),
-      ...(ec ?? []).map(c => ({ category_id: c.id, category_name: c.name, category_type: 'expense' as const, planned_amount: budgetMap.get(`${expense:${c.id}}`) ?? 0, actual_amount: actualExpenses.get(c.id) ?? 0 }))
+      ...(ic ?? []).map(c => ({ category_id: c.id, category_name: c.name, category_type: 'income' as const, planned_amount: budgetMap.get(`income:${c.id}`) ?? 0, actual_amount: actualIncome.get(c.id) ?? 0 })),
+      ...(ec ?? []).map(c => ({ category_id: c.id, category_name: c.name, category_type: 'expense' as const, planned_amount: budgetMap.get(`expense:${c.id}`) ?? 0, actual_amount: actualExpenses.get(c.id) ?? 0 }))
     ]
     setRows(nextRows)
     const nextPlanned: Record<string, string> = {}
