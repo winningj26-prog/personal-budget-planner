@@ -7,6 +7,7 @@ interface AuthContextValue {
   session: Session | null
   loading: boolean
   signOut: () => Promise<void>
+  requestMagicLink: (email: string) => Promise<string | null>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -39,8 +40,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut()
   }
 
+  async function requestMagicLink(email: string) {
+    const { error } = await supabase.auth.signInWithOtp({ email })
+    return error?.message ?? null
+  }
+
   return (
-    <AuthContext.Provider value={{ user: session?.user ?? null, session, loading, signOut }}>
+    <AuthContext.Provider value={{ user: session?.user ?? null, session, loading, signOut, requestMagicLink }}>
       {children}
     </AuthContext.Provider>
   )
