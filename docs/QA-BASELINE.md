@@ -49,7 +49,7 @@
 2. Supabase Auth email/OTP and redirect configuration must be completed in deployment.
 3. Responsive/accessibility and end-to-end UI verification remain outstanding.
 4. Deployment verification remains outstanding.
-5. Latest CI confirmation after the MonthlyBudget syntax fix is pending.
+5. CI build and unit tests are verified by GitHub Actions run #51.
 
 ## Verification rule
 
