@@ -29,17 +29,17 @@ export default function AppShell() {
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm flex-wrap">
-            <label>Currency <select className="border border-slate-200 rounded-md px-2 py-1" value={settings.currency} onChange={e => setSettings({ ...settings, currency: e.target.value })}><option>USD</option><option>EUR</option><option>GBP</option></select></label>
-            <label>Month <select className="border border-slate-200 rounded-md px-2 py-1" value={settings.month} onChange={e => setSettings({ ...settings, month: Number(e.target.value) })}>{Array.from({ length: 12 }, (_, i) => <option key={i} value={i + 1}>{new Date(2000, i, 1).toLocaleString('en-US', { month: 'long' })}</option>)}</select></label>
-            <label>Year <select className="border border-slate-200 rounded-md px-2 py-1" value={settings.year} onChange={e => setSettings({ ...settings, year: Number(e.target.value) })}>{[settings.year - 1, settings.year, settings.year + 1].map(y => <option key={y}>{y}</option>)}</select></label>
-            <button onClick={() => void signOut()} className="inline-flex items-center gap-1 border border-slate-200 rounded-md px-2 py-1 text-slate-600 hover:bg-slate-50" title="Sign out"><LogOut size={15} /> Sign out</button>
+            <label className="inline-flex items-center gap-1">Currency <select aria-label="Currency" className="border border-slate-200 rounded-md px-2 py-1" value={settings.currency} onChange={e => setSettings({ ...settings, currency: e.target.value })}><option>USD</option><option>EUR</option><option>GBP</option></select></label>
+            <label className="inline-flex items-center gap-1">Month <select aria-label="Month" className="border border-slate-200 rounded-md px-2 py-1" value={settings.month} onChange={e => setSettings({ ...settings, month: Number(e.target.value) })}>{Array.from({ length: 12 }, (_, i) => <option key={i} value={i + 1}>{new Date(2000, i, 1).toLocaleString('en-US', { month: 'long' })}</option>)}</select></label>
+            <label className="inline-flex items-center gap-1">Year <select aria-label="Year" className="border border-slate-200 rounded-md px-2 py-1" value={settings.year} onChange={e => setSettings({ ...settings, year: Number(e.target.value) })}>{[settings.year - 1, settings.year, settings.year + 1].map(y => <option key={y}>{y}</option>)}</select></label>
+            <button type="button" onClick={() => void signOut()} className="inline-flex items-center gap-1 border border-slate-200 rounded-md px-2 py-1 text-slate-600 hover:bg-slate-50" title="Sign out"><LogOut size={15} /> Sign out</button>
           </div>
         </div>
         <nav className="flex gap-1 px-4 pb-2 overflow-x-auto">
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${isActive ? 'bg-brand-navy text-white' : 'text-slate-600 hover:bg-slate-100'}`}><Icon size={16} />{label}</NavLink>)}
         </nav>
       </header>
-      <main className="p-6 max-w-7xl mx-auto"><Outlet /></main>
+      <main className="p-4 md:p-6 max-w-7xl mx-auto"><Outlet /></main>
     </div>
   )
 }
