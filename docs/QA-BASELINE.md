@@ -1,6 +1,6 @@
 # QA Baseline — Personal Monthly Budget Planner
 
-**Status:** Unverified until executable CI or local environment completes the checks.
+**Status:** Implemented / Unverified. CI reached the build step but exposed a TypeScript syntax defect; that defect has been fixed on the feature branch. The next CI result is still pending.
 
 ## Test-result table
 
@@ -45,13 +45,11 @@
 
 ## Open issues
 
-1. Income transactions need edit/delete UX.
-2. Expense transactions need edit/delete UX.
-3. Category management needs edit/default-category handling and user-facing error states.
-4. Automated unit/integration tests are not yet present.
-5. CI workflow exists but no workflow run was returned by the GitHub connector for the tested commits; executable build status remains unverified.
-6. Supabase Auth email/OTP and redirect configuration must be completed in deployment.
-7. Dashboard and annual summary currently perform multiple period queries; optimize after correctness is verified.
+1. Supabase integration/RLS tests still require a dedicated authenticated test environment.
+2. Supabase Auth email/OTP and redirect configuration must be completed in deployment.
+3. Responsive/accessibility and end-to-end UI verification remain outstanding.
+4. Deployment verification remains outstanding.
+5. Latest CI confirmation after the MonthlyBudget syntax fix is pending.
 
 ## Verification rule
 
