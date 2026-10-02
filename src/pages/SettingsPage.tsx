@@ -20,7 +20,23 @@ function CategoryList({ table, title }: { table: 'income_categories' | 'expense_
     setLoading(false)
   }
 
-  useEffect(() => { void load() }, [])
+  useEffect(() => {
+    async function loadOrSeed() {
+      await load()
+      const { data } = await supabase.from(table).select('id').limit(1)
+      if (!data?.length) {
+        const defaults = table === 'income_categories'
+          ? ['Salary', 'Freelance', 'Other Income']
+          : ['Housing', 'Food', 'Transportation', 'Utilities', 'Healthcare', 'Entertainment', 'Other']
+        const { data: userData } = await supabase.auth.getUser()
+        if (userData.user) {
+          await supabase.from(table).insert(defaults.map(name => ({ name, user_id: userData.user!.id })))
+          await load()
+        }
+      }
+    }
+    void loadOrSeed()
+  }, [])
 
   async function addCategory() {
     if (!newName.trim()) return
@@ -59,7 +75,7 @@ function CategoryList({ table, title }: { table: 'income_categories' | 'expense_
           : <><span>{c.name}</span><div className="flex gap-1"><button onClick={() => beginEdit(c)} className="text-slate-400 hover:text-brand-navy" aria-label={`Edit ${c.name}`}><Pencil size={14} /></button><button onClick={() => void removeCategory(c.id)} className="text-slate-400 hover:text-negative" aria-label={`Delete ${c.name}`}><Trash2 size={14} /></button></div></>}
       </li>)}
     </ul>}
-    <div className="flex gap-2"><input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Add category…" className="flex-1 border border-slate-200 rounded-md px-3 py-1.5 text-sm" /><button onClick={() => void addCategory()} className="px-3 py-1.5 rounded-md bg-brand-navy text-white text-sm flex items-center gap-1"><Plus size={14} /> Add</button></div>
+    <div className="flex gap-2"><input aria-label={`New ${title} category`} value={newName} onChange={e => setNewName(e.target.value)} placeholder="Add category…" className="flex-1 border border-slate-200 rounded-md px-3 py-1.5 text-sm" /><button type="button" onClick={() => void addCategory()} className="px-3 py-1.5 rounded-md bg-brand-navy text-white text-sm flex items-center gap-1"><Plus size={14} /> Add</button></div>
   </div>
 }
 
