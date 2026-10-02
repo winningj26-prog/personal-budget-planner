@@ -6,6 +6,8 @@ create table if not exists user_settings (
   user_id uuid primary key references auth.users on delete cascade,
   currency text not null default 'USD',
   date_format text not null default 'MM/DD/YYYY',
+  default_month int not null default extract(month from current_date)::int check (default_month between 1 and 12),
+  default_year int not null default extract(year from current_date)::int check (default_year between 2000 and 2100),
   updated_at timestamptz not null default now()
 );
 
@@ -91,3 +93,18 @@ select
 from budgets b
 left join income_categories ic on ic.id = b.category_id and b.category_type = 'income'
 left join expense_categories ec on ec.id = b.category_id and b.category_type = 'expense';
+
+-- Helpful indexes for the application's month/year queries.
+create index if not exists idx_income_user_date on income(user_id, date);
+create index if not exists idx_expenses_user_date on expenses(user_id, transaction_date);
+create index if not exists idx_budgets_user_period on budgets(user_id, year, month);
+create index if not exists idx_income_category on income(category_id);
+create index if not exists idx_expense_category on expenses(category_id);
+
+-- Migration-safe additions for databases created from an earlier schema version.
+alter table user_settings add column if not exists default_month int;
+alter table user_settings add column if not exists default_year int;
+update user_settings set default_month = coalesce(default_month, extract(month from current_date)::int), default_year = coalesce(default_year, extract(year from current_date)::int);
+
+-- Ensure the exposed budget view applies the underlying RLS policies to the calling user.
+alter view v_budget_status set (security_invoker = true);
