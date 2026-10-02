@@ -6,7 +6,8 @@ This app is yours to deploy on your own infrastructure. No external servers are 
 1. Go to https://supabase.com and create a free account/project.
 2. In SQL Editor, run `sql/schema.sql`.
 3. Copy your Project URL and anon public key from Project Settings → API.
-4. Enable Email sign-in under Authentication → Providers.
+4. Enable Email sign-in under Authentication → Providers. The app uses `signInWithOtp` for passwordless email links.
+5. Under Authentication → URL Configuration, set the Site URL to your deployed app URL and add your local development URL (for example `http://localhost:5173`) to the Redirect URLs list.
 
 ## 2. Configure the app
 Copy `.env.example` to `.env` and set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.
@@ -24,3 +25,15 @@ Go to Settings and add Income and Expense categories.
 Push the project to GitHub, import it into Vercel, add the two environment variables, and deploy.
 
 Financial figures are for personal tracking only and are not professional financial, tax, or accounting advice.
+## 6. Security verification
+Run `docs/SUPABASE-RLS-TESTS.sql` in a dedicated Supabase test project with two authenticated users. The database schema enables RLS on all user-owned tables and uses a security-invoker budget view.
+
+## 7. Deployment verification checklist
+- Confirm the deployed URL is present in Supabase Auth URL Configuration.
+- Confirm the two Vite environment variables are configured in the hosting provider.
+- Sign in with a test account.
+- Verify settings persist after refresh.
+- Verify income/expense create, edit, and delete.
+- Verify budget save and planned-vs-actual calculations.
+- Verify dashboard and annual summary data.
+- Run the RLS test script with two test users.
