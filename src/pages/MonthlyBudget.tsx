@@ -111,7 +111,7 @@ export default function MonthlyBudget() {
       accessor: r => {
         const key = `${r.category_type}:${r.category_id}`
         return <div className="flex items-center gap-2 justify-end">
-          <input aria-label={`${Planned amount for ${r.category_name}}`} type="number" min="0" step="0.01" value={planned[key] ?? ''} onChange={e => setPlanned(current => ({ ...current, [key]: e.target.value }))} className="w-28 border border-slate-200 rounded-md px-2 py-1 text-right bg-info-bg" />
+          <input aria-label={`Planned amount for ${r.category_name}`} type="number" min="0" step="0.01" value={planned[key] ?? ''} onChange={e => setPlanned(current => ({ ...current, [key]: e.target.value }))} className="w-28 border border-slate-200 rounded-md px-2 py-1 text-right bg-info-bg" />
           <button onClick={() => void saveBudget(r)} disabled={saving === key} className="p-1.5 rounded-md bg-brand-navy text-white disabled:opacity-50" title="Save planned amount"><Save size={14} /></button>
         </div>
       },
@@ -124,7 +124,6 @@ export default function MonthlyBudget() {
     }, align: 'right', computed: true },
     { header: '% Used', accessor: r => formatPercent(r.planned_amount > 0 ? r.actual_amount / r.planned_amount : 0), align: 'right', computed: true },
     { header: 'Status', accessor: r => {
-      const utilization = budgetUtilization(r.planned_amount, r.actual_amount)
       const status = budgetStatus(r.planned_amount, r.actual_amount)
       return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusTone[status]}`}>{r.planned_amount === 0 && r.actual_amount > 0 ? 'Over Budget' : status}</span>
     }, computed: true }
